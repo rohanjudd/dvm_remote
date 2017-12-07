@@ -5,9 +5,7 @@ import config
 
 class DVM:
     def __init__(self):
-        self.tel = telnetlib.Telnet()
-        self.results = {}
-        self.voltage = 0
+        self.ser = serial.Serial()
         self.connected = False
 
     def connect(self):
