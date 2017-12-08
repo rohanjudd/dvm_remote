@@ -61,9 +61,18 @@ class DVM:
             return "EMPTY"
 
     def decode_voltage(self, s):
+        print(s)
         assert s[0] == 'b'
+        assert s[11] == '+'
         print(s[14:17])
         assert s[14:17] == 'VDC'
+        print(s[3:10])
+        mant = float(s[3:10])
+        exp = int(s[12])
+        val = mant * (exp * 10)
+        print(val)
+        return val
+
 
     def get_id(self):
         self.send(config.READ_ID)
@@ -73,7 +82,7 @@ class DVM:
     def read_value(self):
         self.send(config.READ_VOLTAGE)
         time.sleep(0.1)
-        return self.read()
+        return self.decode_voltage(self.read())
 
     def read_voltage(self):
         self.send(config.READ_VOLTAGE)

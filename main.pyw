@@ -45,7 +45,8 @@ def set_vdc():
     dvm.set_vdc()
 
 def read_value():
-    print(dvm.read_voltage())
+    val = dvm.read_value()
+    show_voltage("green", "{:.4f}V".format(val))
 
 def get_id():
     print(psu.get_id())
