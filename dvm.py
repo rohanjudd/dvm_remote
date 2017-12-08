@@ -3,6 +3,8 @@ import time
 import math
 import config
 
+# b'+0.04824E+1 VDC \r\n'
+
 class DVM:
     def __init__(self):
         self.ser = serial.Serial()
