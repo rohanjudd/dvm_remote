@@ -6,12 +6,17 @@ import config
 class DVM:
     def __init__(self):
         self.ser = serial.Serial()
+        self.ser.port = config.PORT
+        self.ser.baudrate = config.BAUD_RATE
+        self.ser.timeout = config.TIMEOUT
         self.connected = False
 
     def connect(self):
         try:
-            self.tel.open(config.HOST, config.PORT, timeout=config.TIMEOUT)
-        except socket.timeout:
+            self.ser.open()
+            self.ser.setRTS(False)
+            self.ser.setDTR(False)
+        except serial.SerialException:
             self.connected = False
             return self.connected
         self.connected = True
@@ -19,27 +24,52 @@ class DVM:
 
     def disconnect(self):
         self.connected = False
-        self.tel.close()
+        self.ser.close()
+
+    def readline(self):
+        eol = b'\r\n'
+        leneol = len(eol)
+        line = bytearray()
+        while True:
+            c = self.ser.read(1)
+            if c:
+                line += c
+                if line[-leneol:] == eol:
+                    break
+            else:
+                break
+        return bytes(line)
 
     def send(self, message):
         print("sending: {}".format(message))
         try:
-            self.tel.write(message.encode())
+            self.ser.write(message.encode())
+            self.ser.write('\n'.encode())
         except AttributeError:
             print("Not Connected")
 
     def read(self):
         try:
-            inp = self.tel.read_eager().decode("utf-8").strip()
-            print(inp)
+            inp = str(self.readline())
+            self.decode_voltage(inp)
             return inp
         except EOFError:
             return "EOFError"
         except ValueError:
             return "EMPTY"
 
+    def decode_voltage(self, s):
+        assert s[0] == 'b'
+        print(s[14:17])
+        assert s[14:17] == 'VDC'
+
     def get_id(self):
         self.send(config.READ_ID)
+        time.sleep(0.1)
+        return self.read()
+
+    def read_value(self):
+        self.send(config.READ_VOLTAGE)
         time.sleep(0.1)
         return self.read()
 
@@ -57,6 +87,12 @@ class DVM:
         self.send(config.IS_ON)
         time.sleep(0.1)
         return self.read()
+
+    def set_ohms(self):
+        self.send(config.SET_OHMS)
+
+    def set_vdc(self):
+        self.send(config.SET_VDC)
 
     def turn_on(self):
         self.send(config.TURN_ON)

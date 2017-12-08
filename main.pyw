@@ -1,9 +1,9 @@
 import time
 import tkinter as tk
 
-from dvm import PSU
+from dvm import DVM
 
-psu = PSU()
+dvm = DVM()
 root = tk.Tk()
 
 root.minsize(width=160, height=520)
@@ -13,19 +13,18 @@ root.iconbitmap('favicon.ico')
 lockable_buttons = []
 
 def connect():
-    if not psu.connect():
-        show_status("yellow", "PSU Not Found")
-        #unlock_buttons()
-        #show_status("light blue", "Connected")
-    else:
-        turn_off()
-        set_voltage(0)
+    if dvm.connect():
         show_status("blue", "Connected")
         unlock_buttons()
 
+    else:
+        show_status("yellow", "PSU Not Found")
+
+
+
 
 def disconnect():
-    psu.disconnect()
+    dvm.disconnect()
     lock_buttons()
     show_status("grey", "Not Connected")
 
@@ -39,6 +38,14 @@ def turn_off():
     show_voltage("red", "{:.2f}V".format(psu.voltage))
     root.update()
 
+def set_ohms():
+    dvm.set_ohms()
+
+def set_vdc():
+    dvm.set_vdc()
+
+def read_value():
+    print(dvm.read_voltage())
 
 def get_id():
     print(psu.get_id())
@@ -76,7 +83,7 @@ def delayed_reset():
 
 
 def show_connected_status():
-    if psu.connected:
+    if dvm.connected:
         show_status("light blue", "Connected")
     else:
         show_status("grey", "Not Connected")
@@ -111,7 +118,7 @@ def unlock_buttons():
         obj['state'] = 'normal'
 
 def close():
-    psu.disconnect()
+    dvm.disconnect()
     exit()
 
 
@@ -131,13 +138,13 @@ disconnect_button.pack(fill=tk.X, padx=5)
 disconnect_button.configure(state=tk.DISABLED)
 tk.Label(root).pack()
 
-on_button = tk.Button(root, text="ON", command=lambda: turn_on())
+on_button = tk.Button(root, text="VDC", command=lambda: set_vdc())
 on_button.pack(fill=tk.X, padx=5)
-off_button = tk.Button(root, text="OFF", command=lambda: turn_off())
+off_button = tk.Button(root, text="OHMS", command=lambda: set_ohms())
 off_button.pack(fill=tk.X, padx=5)
 tk.Label(root).pack()
 
-delayed_reset_button = tk.Button(root, text="Delayed Reset", command=lambda: delayed_reset())
+delayed_reset_button = tk.Button(root, text="Read Value", command=lambda: read_value())
 delayed_reset_button.pack(fill=tk.X, padx=5)
 tk.Label(root).pack()
 
