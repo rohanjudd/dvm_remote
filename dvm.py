@@ -43,7 +43,7 @@ class DVM:
         return bytes(line)
 
     def send(self, message):
-        print("sending: {}".format(message))
+        #print("sending: {}".format(message))
         try:
             self.ser.write(message.encode())
             self.ser.write('\n'.encode())
@@ -53,7 +53,6 @@ class DVM:
     def read(self):
         try:
             inp = str(self.readline())
-            #self.decode_voltage(inp)
             return inp
         except EOFError:
             return "EOFError"
@@ -61,7 +60,7 @@ class DVM:
             return "EMPTY"
 
     def decode_voltage(self, s):
-        print(s)
+        #print(s)
         try:
             #assert s[0] == 'b'
             #assert s[11] == '+'
@@ -87,7 +86,6 @@ class DVM:
 
     def read_value(self):
         self.send(config.READ_VOLTAGE)
-        #time.sleep(0.1)
         return self.decode_voltage(self.read())
 
     def read_voltage(self):
