@@ -10,9 +10,12 @@ from matplotlib.lines import Line2D
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
+from dvm import DVM
+
+dvm = DVM()
 
 class Scope(object):
-    def __init__(self, ax, maxt=2, dt=0.02):
+    def __init__(self, ax, maxt=2, dt=0.04):
         self.ax = ax
         self.dt = dt
         self.maxt = maxt
@@ -20,7 +23,7 @@ class Scope(object):
         self.ydata = [0]
         self.line = Line2D(self.tdata, self.ydata)
         self.ax.add_line(self.line)
-        self.ax.set_ylim(-.1, 1.1)
+        self.ax.set_ylim(0, 1)
         self.ax.set_xlim(0, self.maxt)
 
     def update(self, y):
@@ -38,21 +41,22 @@ class Scope(object):
         return self.line,
 
 
-def emitter(p=0.03):
-    'return a random value with probability p, else 0'
+def emitter():
     while True:
-        v = np.random.rand(1)
-        if v > p:
-            yield 0.
-        else:
-            yield np.random.rand(1)
+        yield dvm.read_value()
 
 fig, ax = plt.subplots()
 scope = Scope(ax)
 
+if dvm.connect():
+    print('connected')
+else:
+    print('not_connected')
+
+
 # pass a generator in "emitter" to produce data for the update func
-ani = animation.FuncAnimation(fig, scope.update, emitter, interval=10,
+ani = animation.FuncAnimation(fig, scope.update, emitter, interval=0,
                               blit=True)
 
-
 plt.show()
+dvm.disconnect()

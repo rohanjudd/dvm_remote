@@ -53,7 +53,7 @@ class DVM:
     def read(self):
         try:
             inp = str(self.readline())
-            self.decode_voltage(inp)
+            #self.decode_voltage(inp)
             return inp
         except EOFError:
             return "EOFError"
@@ -62,17 +62,23 @@ class DVM:
 
     def decode_voltage(self, s):
         print(s)
-        assert s[0] == 'b'
-        assert s[11] == '+'
-        print(s[14:17])
-        assert s[14:17] == 'VDC'
-        print(s[3:10])
-        mant = float(s[3:10])
-        exp = int(s[12])
-        val = mant * (exp * 10)
-        print(val)
-        return val
-
+        try:
+            #assert s[0] == 'b'
+            #assert s[11] == '+'
+            #print(s[14:17])
+            #assert s[14:17] == 'VDC'
+            #print(s[3:10])
+            mant = float(s[3:10])
+            exp = int(s[12])
+            val = mant * (exp * 10)
+            print(val)
+            return val
+        except IndexError:
+            print('Index Error')
+            return 0
+        except ValueError:
+            print('Value Error')
+            return 0
 
     def get_id(self):
         self.send(config.READ_ID)
@@ -81,7 +87,7 @@ class DVM:
 
     def read_value(self):
         self.send(config.READ_VOLTAGE)
-        time.sleep(0.1)
+        #time.sleep(0.1)
         return self.decode_voltage(self.read())
 
     def read_voltage(self):

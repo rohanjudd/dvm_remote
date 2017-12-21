@@ -15,12 +15,11 @@ lockable_buttons = []
 def connect():
     if dvm.connect():
         show_status("blue", "Connected")
+        get_id()
         unlock_buttons()
 
     else:
         show_status("yellow", "PSU Not Found")
-
-
 
 
 def disconnect():
@@ -49,7 +48,7 @@ def read_value():
     show_voltage("green", "{:.4f}V".format(val))
 
 def get_id():
-    print(psu.get_id())
+    print(dvm.get_id())
 
 
 def set_voltage(v):
