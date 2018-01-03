@@ -1,35 +1,18 @@
-"""
-ldr.py
-
-Display analog data from Arduino using Python (matplotlib)
-
-Author: Mahesh Venkitachalam
-Website: electronut.in
-"""
-
-import sys, serial, argparse
-import numpy as np
 import time
 from collections import deque
-
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-
 from dvm import DVM
 
 dvm = DVM()
 
 class AnalogPlot:
-    # constr
     def __init__(self, maxLen):
-
         dvm.connect()
-
         self.ax = deque([0.0] * maxLen)
         self.maxLen = maxLen
         self.t = 0
 
-    # add to buffer
     def addToBuf(self, buf, val):
         if len(buf) < self.maxLen:
             buf.append(val)
@@ -37,7 +20,6 @@ class AnalogPlot:
             buf.popleft()
             buf.append(val)
 
-    # update plot
     def update(self, frameNum, a0, text1, text2):
         try:
             val = dvm.read_value()

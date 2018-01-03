@@ -70,7 +70,7 @@ class DVM:
             mant = float(s[3:10])
             exp = int(s[12])
             val = mant * (exp * 10)
-            print(val)
+            #print(val)
             return val
         except IndexError:
             print('Index Error')
@@ -90,17 +90,17 @@ class DVM:
 
     def read_voltage(self):
         self.send(config.READ_VOLTAGE)
-        time.sleep(0.1)
         return self.read()
+
+    def read_voltage_command(self):
+        self.send(config.READ_VOLTAGE)
 
     def read_current(self):
         self.send(config.READ_CURRENT)
-        time.sleep(0.1)
         return self.read()
 
     def is_on(self):
         self.send(config.IS_ON)
-        time.sleep(0.1)
         return self.read()
 
     def set_ohms(self):
@@ -137,3 +137,23 @@ class DVM:
             print(measured_current)
             self.results[v] = measured_current
         self.send("{} {:.2f}".format(config.SET_VOLTAGE, v))
+
+def millis():
+    return int(round(time.time() * 1000))
+
+def main():
+    dvm = DVM()
+    dvm.connect()
+    t = millis()
+    dvm.read_voltage_command()
+    dvm.read_voltage_command()
+    dvm.read_voltage_command()
+    print(dvm.read())
+    print(dvm.read())
+    print(dvm.read())
+        #print(dvm.read_value())
+        #new = millis()
+        #print(new - t)
+        #t = new
+if __name__ == '__main__':
+    main()
