@@ -92,9 +92,6 @@ class DVM:
         self.send(config.READ_VOLTAGE)
         return self.read()
 
-    def read_voltage_command(self):
-        self.send(config.READ_VOLTAGE)
-
     def read_current(self):
         self.send(config.READ_CURRENT)
         return self.read()
@@ -145,11 +142,6 @@ def main():
     dvm = DVM()
     dvm.connect()
     t = millis()
-    dvm.read_voltage_command()
-    dvm.read_voltage_command()
-    dvm.read_voltage_command()
-    print(dvm.read())
-    print(dvm.read())
     print(dvm.read())
         #print(dvm.read_value())
         #new = millis()
