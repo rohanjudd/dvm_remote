@@ -28,7 +28,7 @@ class AnalogPlot:
             if val > 4:
                 pl.ylim(4.450, 4.550)
             else:
-                pl.ylim(0.470, 0.505)
+                pl.ylim(0.470, 0.505)#
             diff = int((val - self.ax[-4]) * 10000)
             text1.set_text("v = {0:.4f}".format(val))
             text2.set_text("d = {}".format(diff))
